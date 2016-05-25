@@ -1,3 +1,21 @@
 grammar de.htwg.konstanz.mgse.monopolyDsl with org.eclipse.xtext.common.Terminals
 
 generate monopolyDsl "http://www.htwg.de/konstanz/mgse/monopolyDsl"
+
+Monopoly: 'Monopoly ' name=ID 'Fieldsize' size=INT field=Field bannk=Bank dice=Dice cards+=Card+ fields+=Field+ ;
+
+Bank: 'Bank ' name=ID ' with currency in ' currency=ID;
+
+Dice: 'Dicevalue from ' min=INT 'to ' max=INT;
+
+Card: 'Card ' name=ID 'description' description=STRING; // TODO BOOL
+
+Field: 'Field ' name=ID type=Type 'Price ' price=INT 'Position ' position=INT;
+
+Type: 'STREET' | 'GO' | 'TAX' | 'GO_TO_PRISION' | 'PRISON_VISIT_ONLY' | 'FREE_PARKING' | 'COMMUNITY_STACK' | 'CHANCE_STACK'
+
+
+
+// Monopoly htwg
+// Bank bank with currency in Euro
+// Dicevalue from 1 to 6
