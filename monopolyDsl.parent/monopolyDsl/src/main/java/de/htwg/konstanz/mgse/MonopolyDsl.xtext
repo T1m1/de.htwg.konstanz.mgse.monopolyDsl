@@ -2,7 +2,7 @@ grammar de.htwg.konstanz.mgse.monopolyDsl with org.eclipse.xtext.common.Terminal
 
 generate monopolyDsl "http://www.htwg.de/konstanz/mgse/monopolyDsl"
 
-Monopoly: 'Monopoly ' name=ID 'Fieldsize' size=INT  bannk=Bank dice=Dice field+=Field+ communityCards+=CommunityCard+ changeCards+=ChangeCard+ players+=Player+;
+Monopoly: 'Monopoly ' name=ID 'Fieldsize' size=INT  bannk=Bank dice=Dice field+=Field+ communityCards+=CommunityCard+ changeCards+=ChangeCard+ players+=Player+ ';'; 
 
 Bank: 'Bank ' name=ID ' with currency in ' currency=STRING ' with parking money ' parkingMoney=INT;
 
