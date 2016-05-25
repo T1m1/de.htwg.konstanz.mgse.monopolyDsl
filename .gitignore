@@ -1,13 +1,18 @@
 .idea
 monopolyDsl.parent/.gradle
 monopolyDsl.parent/gradle
+monopolyDsl.parent/build.gradle
 monopolyDsl.parent/gradlew
 monopolyDsl.parent/gradlew.bat
+monopolyDsl.parent/settings.gradle
 monopolyDsl.parent/monopolyDsl.idea/src/main
 monopolyDsl.parent/monopolyDsl.ide/src/main
+monopolyDsl.parent/monopolyDsl.ide/build.gradle
 monopolyDsl.parent/monopolyDsl.ide/build/
 monopolyDsl.parent/monopolyDsl/build/
+monopolyDsl.parent/monopolyDsl/build.gradle
 monopolyDsl.parent/monopolyDsl.idea/build/
+monopolyDsl.parent/monopolyDsl.idea/build.gradle
 
 # all generated java files
 **/*.java
