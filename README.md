@@ -27,3 +27,14 @@ ChangeCard changecard2 description "Zahle deinen Gegenspielern 200 Euro"
 Player Timi startposition 0 with budget 2000 number of prison free cards 5 with Icon Boger
 Player Steffen startposition 0 with budget 100 number of prison free cards 0 with Icon Eck;
 ...
+
+
+
+## How
+
+1. MonopolyDSL.xtext -> right click -> run as -> Generate Xtext Artifacts
+2. GenerateMonopolyDSL.mwe2 -> run as -> MWE2 Workflow
+3. de.htwg.konstanz.de.mgse.monopolyDsl -> run as -> Eclipse Application
+4. Create empty project
+5. Create empty file with extension: .monopoly
+5. write dsl
