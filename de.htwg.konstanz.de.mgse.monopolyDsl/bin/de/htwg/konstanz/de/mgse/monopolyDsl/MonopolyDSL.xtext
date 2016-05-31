@@ -2,8 +2,20 @@ grammar de.htwg.konstanz.de.mgse.monopolyDsl.MonopolyDSL with org.eclipse.xtext.
 
 generate monopolyDSL "http://www.htwg.de/konstanz/de/mgse/monopolyDsl/MonopolyDSL"
 
-Model:
-	greetings+=Greeting*;
-	
-Greeting:
-	'Hello' name=ID '!';
+Monopoly: 'Monopoly ' name=ID 'Fieldsize' size=INT  bannk=Bank dice=Dice field+=Field+ communityCards+=CommunityCard+ changeCards+=ChangeCard+ players+=Player+ ';'; 
+
+Bank: 'Bank ' name=ID ' with currency in ' currency=STRING ' with parking money ' parkingMoney=INT;
+
+Dice: 'Dicevalue from ' min=INT 'to ' max=INT;
+
+CommunityCard: 'CommunityCard ' name=ID 'description' description=STRING; // TODO BOOL tofromBank
+
+ChangeCard: 'ChangeCard ' name=ID 'description' description=STRING; // TODO BOOL tofromBank
+
+Field: 'Field ' name=ID 'Type ' type=Type 'Price ' price=INT 'Position ' position=INT;
+
+Type: 'STREET' | 'GO' | 'TAX' | 'GO_TO_PRISION' | 'PRISON_VISIT_ONLY' | 'FREE_PARKING' | 'COMMUNITY_STACK' | 'CHANCE_STACK';
+
+Player: 'Player ' name=ID 'startposition ' pos=INT ' with budget ' budget=INT ' number of prison free cards ' free=INT ' with Icon ' icon=Icon;
+
+Icon: 'Boger' | 'Eck' | 'Schoppa' | 'Neuschwander' | 'Bittel' | 'Maechtel';
