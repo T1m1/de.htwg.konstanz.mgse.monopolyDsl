@@ -24,3 +24,5 @@ monopolyDsl.parent/monopolyDsl.idea/build.gradle
 **/*.ecore
 **/*.xtextbin
 **/*.genmodel
+
+.metadata
