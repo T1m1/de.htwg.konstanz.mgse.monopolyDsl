@@ -9,3 +9,6 @@ Require-Bundle: de.htwg.konstanz.de.mgse.monopolyDsl,
  org.eclipse.xtext.ide,
  org.eclipse.xtext.xbase.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: de.htwg.konstanz.de.mgse.monopolyDsl.ide.contentassist.antlr,
+ de.htwg.konstanz.de.mgse.monopolyDsl.ide.contentassist.antlr.internal
+
