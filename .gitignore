@@ -33,7 +33,7 @@ META-INF
 **/bin/
 de.htwg.konstanz.de.mgse.monopolyDsl.tests
 de.htwg.konstanz.de.mgse.monopolyDsl.ui
-**/*.xtend
+
 **/*.xml
 xtend-gen
 plugin.xml_gen
