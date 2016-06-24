@@ -20,16 +20,21 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 
 	val gameType = "monopoly"
 	val typeClass = "FieldType"
+	val fieldInterface = "IField"
+
+	String gameName
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 
 		val game = resource.contents.head as Game
 
+		gameName = game.name
+
 		val fields = game.fields
 
 		if (!fields.isEmpty) {
 			// generate an Interface if there are fields
-			fsa.generateFile("IField.java", generateInterface(game))
+			fsa.generateFile(fieldInterface + ".java", generateInterface())
 
 			// generate Enum class for fieldTypes
 			fsa.generateFile(typeClass + ".java", generateFieldTypes(fields, game))
@@ -46,7 +51,7 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 	 * Generate field enums
 	 */
 	def generateFieldTypes(EList<Field> list, Game game) '''
-		«createPackage(game)»
+		«createPackage()»
 		
 		
 		/**
@@ -66,13 +71,13 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 		
 	'''
 
-	def generateInterface(Game game) '''
-		«createPackage(game)»
+	def generateInterface() '''
+		«createPackage()»
 		
-		«createImport(game)»
+		«createImportOf(gameType)»
 		
 		
-		public interface IField {
+		public interface «fieldInterface» {
 			
 			/**
 			 * return the position of the field
@@ -88,27 +93,27 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 		}
 		
 	'''
-	
-	def createImport(Game game) '''
-		import de.«game.name».«gameType».«typeClass»;
-	'''
 
 	def generateClass(Field field) '''
-	
-	'''
-
-	def generateFieldObject() '''
-		package de.htwg.monopoly.entities.impl;
+		«createPackage()»
 		
-		import de.htwg.monopoly.entities.IFieldObject;
-		import de.htwg.monopoly.util.FieldType;
+		«createImportOf(fieldInterface)»
+		«createImportOf(typeClass)»
 		
-		public class FieldObject implements IFieldObject {
-		
-			private final int priceToPay;
-			private final FieldType type;
-			private final String name;
-			private final int guiPosition;
+		public class «field.name» implements «fieldInterface» {
+			
+			private final «typeClass» type;
+			private final int position;
+			
+			«FOR property : field.optProperties»
+				private final «IF property == "rent"»int rent;
+				«ELSEIF property == "name"»String name;
+				«ELSEIF property == "color"»String color;
+				«ELSEIF property == "price"»int price;
+				«ELSEIF property == "soldStatus"»boolean sold;
+				«ELSEIF property == "action"»String action;
+				«ENDIF»
+			«ENDFOR»
 		
 			/**
 			 * Simple Field in Monopoly. Either Go, Prison, Go in Prison, Free Parking
@@ -163,8 +168,12 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 		}
 	'''
 
-	def createPackage(Game game) '''
-		package de.«game.name».«gameType»;
+	def createPackage() '''
+		package de.«gameName».«gameType»;
+	'''
+
+	def createImportOf(String classToImport) '''
+		import de.«gameName».«gameType».«classToImport»;
 	'''
 
 }
