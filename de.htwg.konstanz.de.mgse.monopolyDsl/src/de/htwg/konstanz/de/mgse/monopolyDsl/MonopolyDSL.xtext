@@ -3,19 +3,21 @@ grammar de.htwg.konstanz.de.mgse.monopolyDsl.MonopolyDSL with org.eclipse.xtext.
 generate monopolyDSL "http://www.htwg.de/konstanz/de/mgse/monopolyDsl/MonopolyDSL"
 
 Game:
-	'Monopoly ' name=ID ' has the following fields:'
+	'Monopoly' name=ID 'has the following fields:'
 	(fields+=Field)*;
 
 Field:
 	('A' | 'An') name=ID 'with the required properties:'
 	requiredProperty=RequiredProperty ','
 	'and the optional properties:'
-	optProperties+=OptionalProperty+ '.';
+	optProperties+=OptionalProperty+ '.'
+	description=STRING;
 
 RequiredProperty:
 	'type and position';
 
 OptionalProperty:
 	'rent' | 'name' | 'color' | 'price' | 'soldStatus'| 'action';
+
 
 
