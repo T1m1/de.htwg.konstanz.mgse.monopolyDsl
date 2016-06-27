@@ -10,6 +10,7 @@ import org.eclipse.xtext.generator.IGeneratorContext
 import de.htwg.konstanz.de.mgse.monopolyDsl.monopolyDSL.Game
 import de.htwg.konstanz.de.mgse.monopolyDsl.monopolyDSL.Field
 import org.eclipse.emf.common.util.EList
+import de.htwg.konstanz.de.mgse.monopolyDsl.monopolyDSL.Property;
 
 /**
  * Generates code from your model files on save.
@@ -40,10 +41,10 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 			fsa.generateFile(typeClass + ".java", generateFieldTypes(fields, game))
 		}
 
-		for (singleField : fields) {
+		for (field : fields) {
 			// create a class for each field
-			val class = generateClass(singleField)
-			fsa.generateFile(singleField.name.toFirstUpper + ".java", class)
+			val class = generateClass(field)
+			fsa.generateFile(field.name.toFirstUpper + ".java", class)
 		}
 	}
 
@@ -102,9 +103,7 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 		
 		public class «field.name» implements «fieldInterface» {
 			
-			private final «typeClass» type;
-			private final int position;
-			«createOptionalFields(field.optProperties)»
+			«createOptionalFields(field.property)»
 			
 			// hide default constructor
 			private «field.name.toFirstUpper»() {}
@@ -112,85 +111,90 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 			/**
 			 * Constructor for «field.name» field in Monopoly
 			 */
-			«createConstructor(field.name.toFirstUpper, field.optProperties)»
+			«createConstructor(field.name.toFirstUpper, field.property)»
 			
 			
-			«createGetter(field.optProperties)»
+			«createGetter(field.property)»
 			
-			«createSetter(field.optProperties)»		
+			«createSetter(field.property)»
 		
 			@Override
 			public String toString() {
-				return «field.name»;
-			}
-		
-			public int getPriceToPay() {
-				return priceToPay;
-			}
-		
-			@Override
-			public FieldType getType() {
-				return type;
-			}
-		
-			@Override
-			public int getPosition() {
-				return this.guiPosition;
-			}
-			
-			
-		
+				return "«field.name»";
+			}	
 		}
 	'''
 
-	def createSetter(EList<String> properties) '''
+	def createSetter(EList<Property> properties) '''
 		«FOR property : properties BEFORE "" SEPARATOR "\n" AFTER ""»
-			public void set«property.toFirstUpper»(«getTypeOf(property)») {
-				this.«property» = «property»;
+			public void set«getPropertyNameOf(property)»(«getTypeOf(property)») {
+				this.«getPropertyNameOf(property)» = «getPropertyNameOf(property)»;
 				}
 				«ENDFOR»	
 	'''
 
-	def createGetter(EList<String> properties) '''
+	def createGetter(EList<Property> properties) '''
 		«FOR property : properties BEFORE "" SEPARATOR "\n" AFTER ""»
-			public «getOnlyTypeOf(property)» get«property.toFirstUpper»() {
-				return this.«property»;
+			public «getOnlyTypeOf(property)» get«getPropertyNameOf(property)»() {
+				return this.«getPropertyNameOf(property)»;
 				}
 		«ENDFOR»				
 	'''
 
 	def createConstructor(String name,
-		EList<String> properties) '''
-		public «name»(int position, «typeClass» fieldType, «FOR property : properties BEFORE "" SEPARATOR "," AFTER ")"»«getTypeOf(property)»«ENDFOR» {
+		EList<Property> properties) '''
+		public «name»«FOR property : properties BEFORE "(" SEPARATOR "," AFTER ")"»«getTypeOf(property)»«ENDFOR» {
 					«FOR property : properties BEFORE "" SEPARATOR ";" AFTER ";"»
-						this.«property» = «property»
+						this.«getPropertyNameOf(property)» = «getPropertyNameOf(property)»
 					«ENDFOR»
 				}
 	'''
 
-	def createOptionalFields(EList<String> properties) '''
+	def createOptionalFields(EList<Property> properties) '''
 		«FOR property : properties BEFORE "" SEPARATOR ";" AFTER ";"»
 			private final «getTypeOf(property)»
 		«ENDFOR»
 	'''
 
-	def getTypeOf(String type) '''
-		«IF type == "rent"»int rent
-		«ELSEIF type == "name"»String name
-		«ELSEIF type == "color"»String color
-		«ELSEIF type == "price"»int price
-		«ELSEIF type == "soldStatus"»boolean sold
-		«ELSEIF type == "action"»String action
+	def getTypeOf1(Property type) {
+	
+		switch type {
+			case type.rent : return "int rent"
+		}
+	}
+	def getTypeOf(Property type) '''
+		«IF type.rent != null»int rent
+		«ELSEIF type.name != null»String name
+		«ELSEIF type.color != null»String color
+		«ELSEIF type.price != null»int price
+		«ELSEIF type.soldStatus != null»boolean sold
+		«ELSEIF type.action != null»String action
+		«ELSEIF type.position != null»int position
+		«ELSEIF type.type != null»«typeClass» type
 		«ENDIF»
 	'''
 
-	def getOnlyTypeOf(String type) '''
-		«IF type == "rent"»int
-		«ELSEIF type == "name"»String
-		«ELSEIF type == "color"»String
-		«ELSEIF type == "price"»int
-		«ELSEIF type == "soldStatus"»boolean
-		«ELSEIF type == "action"»String
+	def getOnlyTypeOf(Property type) '''
+		«IF type.rent != null»int
+		«ELSEIF type.name != null»String
+		«ELSEIF type.position != null»int
+		«ELSEIF type.type != null»«typeClass»
+		«ELSEIF type.color != null»String
+		«ELSEIF type.price != null»int
+		«ELSEIF type.soldStatus != null»boolean
+		«ELSEIF type.action != null»String
+		«ENDIF»
+	'''
+	
+	def getPropertyNameOf(Property type) '''
+		«IF type.rent != null»rent
+		«ELSEIF type.name != null»name
+		«ELSEIF type.color != null»color
+		«ELSEIF type.price != null»price
+		«ELSEIF type.soldStatus != null»sold
+		«ELSEIF type.action != null»action
+		«ELSEIF type.position != null»position
+		«ELSEIF type.type != null»type
 		«ENDIF»
 	'''
 
