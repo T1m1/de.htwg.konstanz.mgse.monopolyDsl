@@ -4,20 +4,14 @@ generate monopolyDSL "http://www.htwg.de/konstanz/de/mgse/monopolyDsl/MonopolyDS
 
 Game:
 	'Monopoly' name=ID 'has the following fields:'
-	(fields+=Field)*;
+	(fields+=Field)* ';';
 
 Field:
-	('A' | 'An') name=ID 'with the required properties:'
-	requiredProperty=RequiredProperty ','
-	'and the optional properties:'
-	optProperties+=OptionalProperty+ '.'
+	('A' | 'An') name=ID 'with the properties:'
+	property+=Property+ '.'
 	description=STRING;
 
-RequiredProperty:
-	'type and position';
-
-OptionalProperty:
-	'rent' | 'name' | 'color' | 'price' | 'soldStatus'| 'action';
-
-
+Property:
+	type='type' | position='position' | rent='rent' | name='name' | color='color' | price='price' |
+	soldStatus='soldStatus' | action='action';
 
