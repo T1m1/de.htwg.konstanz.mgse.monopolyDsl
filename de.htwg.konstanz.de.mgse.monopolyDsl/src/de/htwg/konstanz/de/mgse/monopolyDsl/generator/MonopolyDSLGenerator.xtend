@@ -43,7 +43,7 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 		for (singleField : fields) {
 			// create a class for each field
 			val class = generateClass(singleField)
-			fsa.generateFile(singleField.name + ".java", class)
+			fsa.generateFile(singleField.name.toFirstUpper + ".java", class)
 		}
 	}
 
@@ -104,49 +104,24 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 			
 			private final «typeClass» type;
 			private final int position;
+			«createOptionalFields(field.optProperties)»
 			
-			«FOR property : field.optProperties»
-				private final «IF property == "rent"»int rent;
-				«ELSEIF property == "name"»String name;
-				«ELSEIF property == "color"»String color;
-				«ELSEIF property == "price"»int price;
-				«ELSEIF property == "soldStatus"»boolean sold;
-				«ELSEIF property == "action"»String action;
-				«ENDIF»
-			«ENDFOR»
-		
+			// hide default constructor
+			private «field.name.toFirstUpper»() {}
+			
 			/**
-			 * Simple Field in Monopoly. Either Go, Prison, Go in Prison, Free Parking
-			 * or a taxes.
-			 * 
-			 * @param name
-			 * @param type
-			 * @param priceToPay
+			 * Constructor for «field.name» field in Monopoly
 			 */
-			public FieldObject(String name, FieldType type, int priceToPay, int guiPosition) {
-				this.priceToPay = priceToPay;
-				this.type = type;
-				this.name = name;
-				this.guiPosition = guiPosition;
-			}
-		
-			/**
-			 * Simple Field in Monopoly. Either Go, Prison, Go in Prison, Free Parking
-			 * or a taxes.
-			 * 
-			 * @param name
-			 * @param type
-			 * @param priceToPay
-			 * 
-			 */
-			public FieldObject(String name, FieldType type, int priceToPay) {
-				this(name, type, priceToPay, 0);
-			}
-		
+			«createConstructor(field.name.toFirstUpper, field.optProperties)»
+			
+			
+			«createGetter(field.optProperties)»
+			
+			«createSetter(field.optProperties)»		
 		
 			@Override
 			public String toString() {
-				return name;
+				return «field.name»;
 			}
 		
 			public int getPriceToPay() {
@@ -166,6 +141,57 @@ class MonopolyDSLGenerator extends AbstractGenerator {
 			
 		
 		}
+	'''
+
+	def createSetter(EList<String> properties) '''
+		«FOR property : properties BEFORE "" SEPARATOR "\n" AFTER ""»
+			public void set«property.toFirstUpper»(«getTypeOf(property)») {
+				this.«property» = «property»;
+				}
+				«ENDFOR»	
+	'''
+
+	def createGetter(EList<String> properties) '''
+		«FOR property : properties BEFORE "" SEPARATOR "\n" AFTER ""»
+			public «getOnlyTypeOf(property)» get«property.toFirstUpper»() {
+				return this.«property»;
+				}
+		«ENDFOR»				
+	'''
+
+	def createConstructor(String name,
+		EList<String> properties) '''
+		public «name»(int position, «typeClass» fieldType, «FOR property : properties BEFORE "" SEPARATOR "," AFTER ")"»«getTypeOf(property)»«ENDFOR» {
+					«FOR property : properties BEFORE "" SEPARATOR ";" AFTER ";"»
+						this.«property» = «property»
+					«ENDFOR»
+				}
+	'''
+
+	def createOptionalFields(EList<String> properties) '''
+		«FOR property : properties BEFORE "" SEPARATOR ";" AFTER ";"»
+			private final «getTypeOf(property)»
+		«ENDFOR»
+	'''
+
+	def getTypeOf(String type) '''
+		«IF type == "rent"»int rent
+		«ELSEIF type == "name"»String name
+		«ELSEIF type == "color"»String color
+		«ELSEIF type == "price"»int price
+		«ELSEIF type == "soldStatus"»boolean sold
+		«ELSEIF type == "action"»String action
+		«ENDIF»
+	'''
+
+	def getOnlyTypeOf(String type) '''
+		«IF type == "rent"»int
+		«ELSEIF type == "name"»String
+		«ELSEIF type == "color"»String
+		«ELSEIF type == "price"»int
+		«ELSEIF type == "soldStatus"»boolean
+		«ELSEIF type == "action"»String
+		«ENDIF»
 	'''
 
 	def createPackage() '''
