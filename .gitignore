@@ -32,7 +32,8 @@ monopolyDsl.parent/monopolyDsl.idea/build.gradle
 META-INF
 **/bin/
 de.htwg.konstanz.de.mgse.monopolyDsl.tests
-de.htwg.konstanz.de.mgse.monopolyDsl.ui
+de.htwg.konstanz.de.mgse.monopolyDsl.ui/*
+!de.htwg.konstanz.de.mgse.monopolyDsl.ui/src
 
 **/*.xml
 xtend-gen
